@@ -5,7 +5,17 @@ const { round } = require('./common')
 
 const ecuVoltageColumns = [0, 0.16, 0.31, 0.47, 0.62, 0.78, 0.94, 1.09, 1.25, 1.40, 1.56, 1.72, 1.87, 2.03, 2.18, 2.34, 2.50, 2.65, 2.81, 2.96, 3.12, 3.28, 3.43, 3.59, 3.74, 3.90, 4.06, 4.21, 4.37, 4.52, 4.68, 4.84, 4.99]
 const refVoltage = 5
-const pullupResistorValue = 2.2 * 1000
+const pullupResistorValue = 2275 // 2.2 * 1000
+
+// Measured pullup resistor: ~2275 ohms. within 2% of 2.2k rating
+//
+// I hooked up a measured 1k resistor to the IAT connector, it flickered between
+// 1.544v and 1.512v
+//
+// measuredV = refVoltage * ohms / (ohms + pullupResistorValue)
+// pullupResistorValue = (refVoltage * ohms / measuredV) - ohms
+//
+// 1.544v (125; 2238), 1.528v (126; 2272), 1.512v (127; 2306)
 
 // Measured on brand new Honda IAT sensor part number 37880-P05-A00
 const sensorOhmsToTemp = [
@@ -204,7 +214,7 @@ console.log(sensorTable)
 console.log(ecuTable)
 console.log(ecuTable.length)
 
-// From measurement
+// From measurement with 2.2k rated pullup
 // [
 //   [ 0, 284 ],
 //   [ 0.16, 270.78 ],
@@ -238,6 +248,43 @@ console.log(ecuTable.length)
 //   [ 4.52, -6.82 ],
 //   [ 4.68, -8.35 ],
 //   [ 4.84, -9.89 ],
+//   [ 4.99, -11 ]
+// ]
+
+// From measurement at 2275 measured pullup
+// [
+//   [ 0, 284 ],
+//   [ 0.16, 268.23 ],
+//   [ 0.31, 215.67 ],
+//   [ 0.47, 185.76 ],
+//   [ 0.62, 168.06 ],
+//   [ 0.78, 153.12 ],
+//   [ 0.94, 141.37 ],
+//   [ 1.09, 132.03 ],
+//   [ 1.25, 123.4 ],
+//   [ 1.4, 115.59 ],
+//   [ 1.56, 108.79 ],
+//   [ 1.72, 102.47 ],
+//   [ 1.87, 96.32 ],
+//   [ 2.03, 90.55 ],
+//   [ 2.18, 85.3 ],
+//   [ 2.34, 79.17 ],
+//   [ 2.5, 73.79 ],
+//   [ 2.65, 69.41 ],
+//   [ 2.81, 63.44 ],
+//   [ 2.96, 58.31 ],
+//   [ 3.12, 51.99 ],
+//   [ 3.28, 47.39 ],
+//   [ 3.43, 41.29 ],
+//   [ 3.59, 34.79 ],
+//   [ 3.74, 26.62 ],
+//   [ 3.9, 16.04 ],
+//   [ 4.06, 5.46 ],
+//   [ 4.21, -4.06 ],
+//   [ 4.37, -5.55 ],
+//   [ 4.52, -6.95 ],
+//   [ 4.68, -8.44 ],
+//   [ 4.84, -9.93 ],
 //   [ 4.99, -11 ]
 // ]
 
