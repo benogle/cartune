@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   RealDash CAN XML description file, version 2 Requires RealDash version 1.5.8 or newer
+  https://realdash.net/manuals/targetid.php
 
   Customized for AEM Series 1 (30-1042) on NSX with Serial to CAN cable.
 
   // ADC Channels
-  1 - ADCR1 (TPS Raw)
-  2 - ADCR2 (MAP Raw)
-  3 - ADCR3 (Timing Adjust? D8)
-  4 - ADCR4 (Knock#1 Raw)
-  5 - ADCR5 (Knock#2 Raw)
-  6 - ADCR6 (IAT Raw)
-  7 - ADCR7 (Coolant Raw)
-  8 - ADCR8 (Battery)
-  9 - ADCR9 (Oxygen Raw #1)
+  1  - ADCR1 (TPS Raw) - D11 (OPEN)
+  2  - ADCR2 (MAP Raw) - D17
+  3  - ADCR3 ("MAF") - D8 (OPEN)
+  4  - ADCR4 (Knock#1 Raw)
+  5  - ADCR5 (Knock#2 Raw)
+  6  - ADCR6 (IAT Raw)
+  7  - ADCR7 (Coolant Raw)
+  8  - ADCR8 (Battery)
+  9  - ADCR9 (Oxygen Raw #1)
   10 - ADCR10 (Oxygen Raw #2)
-  11 - ADCR11 (EGRL)
+  11 - ADCR11 (EGRL) - (Using for TPS)
   12 - ADCR12 (Baro Raw)
-  13 - ADCR13 (VFP?? D6)
-  14 - ADCR14 (EMPTY A19)
+  13 - ADCR13 (VFP??/Gear) - D6 (OPEN)
+  14 - ADCR14 (Spare Temp) - A19 (OPEN)
   15 - ADCR15 (EGT 3 Raw F3)
   16 - ADCR16 (EGT 4 Raw F4)
   17 - ADCR17 (EGT 1 Raw F1)
@@ -38,23 +39,40 @@
           Honda sensor: -13.9PSI (5.48kPA) to 10.94PSI (176.72kPA)
           (V * 1.712 + 5.5) // percentage to kPA
         -->
-        <value offset="2" length="2" targetId="31" conversion="V*1.712*0.0015259+5.5" units="kPa"></value>
+
+        <!--
+          Cannot use AEM's map as serial telemetry messes it up. See the 0x01F0A002 below
+          <value offset="2" length="2" targetId="31" conversion="V*1.712*0.0015259+5.5" units="kPa"></value>
+        -->
 
         <value offset="4" length="2" targetId="42" conversion="V*0.0015259" units="%"></value>
         <value offset="6" length="1" targetId="27" conversion="V*1.8+32" units="F" signed="true"></value>
         <value offset="7" length="1" targetId="14" conversion="V*1.8+32" units="F" signed="true"></value>
     </frame>
 
+    <!--
+      ADCR telemetry in ECU cal is modified to output:
+      ADCR12 - mod
+      ADCR13
+      ADCR14
+      ADCR01 - mod
+      ADCR02 - mod
+      ADCR03 - mod
+      ADCR16
+      ADCR08
+    -->
+
     <frame id="0x01F0A001" endianess="big">
-        <value offset="0" length="2" name="ADCR11" conversion="V*0.00007782" units="V"></value> <!-- D12: EGRL -->
-        <value offset="2" length="2" name="ADCR13" conversion="V*0.00007782" units="V"></value> <!-- D6: VFP ON -->
-        <value offset="4" length="2" name="ADCR14" conversion="V*0.00007782" units="V"></value> <!-- A19: Avail -->
-        <value offset="6" length="2" name="ADCR17" conversion="V*0.00007782" units="V"></value> <!-- F1: Avail EGR1 -->
+        <value offset="0" length="2" name="ADCR12" conversion="V*0.00007782" units="V"></value> <!-- ??: Baro -->
+        <value offset="2" length="2" name="ADCR13" conversion="V*0.00007782" units="V"></value> <!-- D6: Gear -->
+        <!-- fuel pressure targetId 202 -->
+        <value offset="4" length="2" name="ADCR14" conversion="V*0.00007782" units="V"></value> <!-- A19: Spare Temp -->
+        <value offset="6" length="2" name="Oil temp" targetId="152" conversion=" V*0.00291825 - 18.75" units="psi"></value> <!-- D11: ADCR01 -->
     </frame>
 
     <frame id="0x01F0A002" endianess="big">
-        <value offset="0" length="2" name="ADCR18" conversion="V*0.00007782" units="V"></value> <!-- F2: Avail EGR1 -->
-        <value offset="2" length="2" name="ADCR15" conversion="V*0.00007782" units="V"></value> <!-- F3: Avail EGR3 -->
+        <value offset="0" length="2" name="MAP" targetId="31" conversion="V*0.0004295664 - 15.6664" units="psi"></value> <!-- D17: MAP -->
+        <value offset="2" length="2" name="Oil Pressure" targetId="151" conversion=" V*0.00291825 - 18.75" units="V"></value> <!-- D8: ADCR03 -->
         <value offset="4" length="2" name="ADCR16" conversion="V*0.00007782" units="V"></value> <!-- F4: Avail EGR4 -->
         <value offset="6" length="2" name="ADCR08" conversion="V*0.000326" units="V"></value> <!-- Battery Voltage -->
     </frame>
