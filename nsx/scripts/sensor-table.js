@@ -6,43 +6,84 @@ const { round } = require('./common')
 const ecuVoltageColumns = [0, 0.16, 0.31, 0.47, 0.62, 0.78, 0.94, 1.09, 1.25, 1.40, 1.56, 1.72, 1.87, 2.03, 2.18, 2.34, 2.50, 2.65, 2.81, 2.96, 3.12, 3.28, 3.43, 3.59, 3.74, 3.90, 4.06, 4.21, 4.37, 4.52, 4.68, 4.84, 4.99]
 const refVoltage = 5
 
-const pullupResistorValue = 2275 // 2.2 * 1000 // measured
+const internalPullupResistorValue = 100000 // 100k builtin
+const pullupResistorValue = 2200 // 100k builtin
+// const pullupResistorValue = 2275 // 2.2 * 1000 // measured
 // const pullupResistorValue = 2.2 * 1000 // 2.2 * 1000
 
+
+
+// Rife 0-300 liquid temp sensor
 const sensorOhmsToTemp = [
+  [189726, -20],
   [132092, -10],
-  [90320, 1],
-  [62863, 12],
-  [44481, 23],
-  [31963, 34],
-  [23302, 45],
-  [17218, 56],
-  [12884, 67],
-  [9756, 78],
-  [7471, 89],
+  [93425, 0],
+  [67059, 10],
+  [48804, 20],
+  [35983, 30],
+  [26855, 40],
+  [20274, 50],
+  [15473, 60],
+  [11929, 70],
+  [9287, 80],
+  [7295, 90],
   [5781, 100],
-  [4518, 111],
-  [3564, 122],
-  [2836, 133],
-  [2276, 144],
-  [1840, 155],
-  [1500, 166],
-  [1231, 177],
-  [1017, 188],
-  [845, 199],
+  [4618, 110],
+  [3718, 120],
+  [3016, 130],
+  [2463, 140],
+  [2025, 150],
+  [1675, 160],
+  [1395, 170],
+  [1167, 180],
+  [983, 190],
+  [832, 200],
   [707, 210],
-  [595, 221],
-  [503, 232],
-  [428, 243],
-  [366, 254],
-  [314, 265],
-  [271, 276],
-  [235, 287],
-  [204, 298],
-  [178, 309],
-  [157, 320],
-  [132, 335],
+  [604, 220],
+  [519, 230],
+  [447, 240],
+  [387, 250],
+  [336, 260],
+  [294, 270],
+  [257, 280],
+  [226, 290],
 ]
+
+// Rife IAT Lo-AT after 9/2020
+// const sensorOhmsToTemp = [
+//   [132092, -10],
+//   [90320, 1],
+//   [62863, 12],
+//   [44481, 23],
+//   [31963, 34],
+//   [23302, 45],
+//   [17218, 56],
+//   [12884, 67],
+//   [9756, 78],
+//   [7471, 89],
+//   [5781, 100],
+//   [4518, 111],
+//   [3564, 122],
+//   [2836, 133],
+//   [2276, 144],
+//   [1840, 155],
+//   [1500, 166],
+//   [1231, 177],
+//   [1017, 188],
+//   [845, 199],
+//   [707, 210],
+//   [595, 221],
+//   [503, 232],
+//   [428, 243],
+//   [366, 254],
+//   [314, 265],
+//   [271, 276],
+//   [235, 287],
+//   [204, 298],
+//   [178, 309],
+//   [157, 320],
+//   [132, 335],
+// ]
 
 // Measured pullup resistor: ~2275 ohms. within 2% of 2.2k rating
 //
@@ -234,6 +275,10 @@ function interpolate (value, table) {
   return percentOfRange * (maxResult - minResult) + minResult
 }
 
+function getIdealExternalPullup (desiredResistance, internalPullupResistorValue) {
+  return 1/(1/desiredResistance - 1/internalPullupResistorValue)
+}
+
 function getSensorVoltage (ohms) {
   return refVoltage * ohms / (ohms + pullupResistorValue)
 }
@@ -250,6 +295,9 @@ const ecuTable = ecuVoltageColumns.map((volts) => (
 console.log(sensorTable)
 console.log(ecuTable)
 console.log(ecuTable.length)
+
+console.log(`Ideal internal resistor to reach 2200:`, getIdealExternalPullup(2200, internalPullupResistorValue))
+console.log(`Ideal internal resistor to reach 1000:`, getIdealExternalPullup(1000, internalPullupResistorValue))
 
 // Rife sensor
 //
