@@ -38,11 +38,11 @@
           Translated to percent, scaled for the honda sensor, then converted to kPa.
           Honda sensor: -13.9PSI (5.48kPA) to 10.94PSI (176.72kPA)
           (V * 1.712 + 5.5) // percentage to kPA
-        -->
-
-        <!--
           Cannot use AEM's map as serial telemetry messes it up. See the 0x01F0A002 below
           <value offset="2" length="2" targetId="31" conversion="V*1.712*0.0015259+5.5" units="kPa"></value>
+
+          0-100% to psi
+          <value offset="2" length="2" targetId="31" conversion="V*0.2484*0.0015259-13.9" units="psi"></value>
         -->
 
         <value offset="4" length="2" targetId="42" conversion="V*0.0015259" units="%"></value>
@@ -71,7 +71,8 @@
     </frame>
 
     <frame id="0x01F0A002" endianess="big">
-        <value offset="0" length="2" name="MAP" targetId="31" conversion="V*0.0004295664 - 15.6664" units="psi"></value> <!-- D17: MAP -->
+        <value offset="0" length="2" targetId="31" conversion="V*0.0004295664 - 15.6664" units="psi"></value> <!-- D17: MAP  targetId 31 -->
+        <value offset="0" length="2" name="MAPADC" conversion="V*0.00007782" units="v"></value> <!-- D17: MAP  targetId 31 -->
         <value offset="2" length="2" name="Oil Pressure" targetId="151" conversion=" V*0.00291825 - 18.75" units="V"></value> <!-- D8: ADCR03 -->
         <value offset="4" length="2" name="ADCR16" conversion="V*0.00007782" units="V"></value> <!-- F4: Avail EGR4 -->
         <value offset="6" length="2" name="ADCR08" conversion="V*0.000326" units="V"></value> <!-- Battery Voltage -->
