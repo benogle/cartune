@@ -10,14 +10,14 @@
 
 const newRatio = parseFloat(process.argv[2])
 
-const totalTravel = 93.4
-const currentGain = 38.5
+const totalTravel = 120.5
+const currentGain = 40
 const currentLockToLock = totalTravel / currentGain
 const inputAngles = [
-  15, 30, 45, 60, 90, 120, 180, 225
+  15, 30, 45, 60, 90, 100, 120, 180, 225
 ]
 
-const ratioCenter = 20.8
+const ratioCenter = 18.2
 const ratioEnd = 18.2
 
 function round (val, places) {
