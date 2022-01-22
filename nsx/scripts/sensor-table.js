@@ -11,8 +11,6 @@ const pullupResistorValue = 2200 // 100k builtin
 // const pullupResistorValue = 2275 // 2.2 * 1000 // measured
 // const pullupResistorValue = 2.2 * 1000 // 2.2 * 1000
 
-
-
 // Rife 0-300 liquid temp sensor
 const sensorOhmsToTemp = [
   [189726, -20],
@@ -210,6 +208,54 @@ const sensorOhmsToTemp = [
 //   [314, 181],
 //   [147, 226],
 //   [0, 263],
+// ]
+
+// Measured ECT: 37870-PJ7-003
+// const sensorOhmsToTemp = [
+//   [250000, -9],
+//   [21267, -4],
+//   [9533, 14],
+//   [6600, 25],
+//   [4840, 36],
+//   [3667, 46],
+//   // measure starts here
+//   [2860, 60],
+//   [2430, 70],
+//   [1935, 81],
+//   [1535, 93],
+//   [1310, 100],
+//   [1055, 111],
+//   [920, 117],
+//   [770, 128],
+//   [690, 133],
+//   [540, 146],
+//   [480, 153],
+//   [417, 161],
+//   [380, 167],
+//   [315, 178],
+//   [285, 185],
+//   [254, 192],
+//   [220, 200],
+//   [200, 207],
+//   [180, 212],
+//   // end measure
+//   [147, 226],
+//   [0, 263],
+// ]
+
+
+// Scale from old guy
+// http://www.nsxprime.com/forum/showthread.php/216756-Coolant-Temperature-Questions?p=2041941&viewfull=1#post2041941
+// const sensorOhmsToTemp = [
+//   [14000, -4],
+//   [6000, 32],
+//   [2600, 68],
+//   [1000, 104],
+//   [500, 140],
+//   [260, 176],
+//   [180, 212],
+//   [100, 248],
+//   [0, 268]
 // ]
 
 // Rough; Based on the chart in the manual
