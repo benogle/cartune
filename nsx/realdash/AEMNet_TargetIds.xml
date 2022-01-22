@@ -6,9 +6,9 @@
   Customized for AEM Series 1 (30-1042) on NSX with Serial to CAN cable.
 
   // ADC Channels
-  1  - ADCR1 (TPS Raw) - D11 (OPEN)
+  1  - ADCR1 (TPS Raw) - D11 (OPEN; oil temp)
   2  - ADCR2 (MAP Raw) - D17
-  3  - ADCR3 ("MAF") - D8 (OPEN)
+  3  - ADCR3 ("MAF") - D8 (OPEN; oil pressure)
   4  - ADCR4 (Knock#1 Raw)
   5  - ADCR5 (Knock#2 Raw)
   6  - ADCR6 (IAT Raw)

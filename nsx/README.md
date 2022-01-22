@@ -7,7 +7,9 @@ Car is a 1991 NSX, C30A with an old whipple 1.6 CTSC with the high boost pulley.
 * base - the tune when I bought the car
 * current - what is in the car now
   * Rife Lo-AT air temp sensor
-  * Using TPS signal from ADCR11 (D12 pin, "PR Press Voltage")
+  * Using TPS signal from ADCR11 (D12 pin, "PR Press Voltage", less noisy than D11)
+  * Oil temp: Rife 0-300 into ADCR01 (D11 pin)
+  * Oil pressure: Lowdoller 0 - 150psi into ADCR03 (D8 pin)
 * current-stock-sensors - current with stock sensor cal tables
   * Stock sensors other than O2
 
