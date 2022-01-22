@@ -67,14 +67,17 @@
         <value offset="2" length="2" name="ADCR13" conversion="V*0.00007782" units="V"></value> <!-- D6: Gear -->
         <!-- fuel pressure targetId 202 -->
         <value offset="4" length="2" name="ADCR14" conversion="V*0.00007782" units="V"></value> <!-- A19: Spare Temp -->
-        <value offset="6" length="2" name="Oil temp" targetId="152" conversion=" V*0.00291825 - 18.75" units="psi"></value> <!-- D11: ADCR01 -->
+
+        <!-- oil temp -->
+        <!--<value offset="6" length="2" name="Oil Temp" targetId="152" conversion="V*0.00007782" units="F"></value> D11: ADCR01 -->
+        <value offset="6" length="2" name="Oil Temp" targetId="152" conversion="-1.1718*(V*0.00007782)*(V*0.00007782)*(V*0.00007782)*(V*0.00007782)*(V*0.00007782) + 15.4508*(V*0.00007782)*(V*0.00007782)*(V*0.00007782)*(V*0.00007782) + -80.2679*(V*0.00007782)*(V*0.00007782)*(V*0.00007782) + 207.863*(V*0.00007782)*(V*0.00007782) + -314.9237*(V*0.00007782) + 400.148" units="F"></value> <!-- D11: ADCR01 -->
     </frame>
 
     <frame id="0x01F0A002" endianess="big">
         <value offset="0" length="2" targetId="31" conversion="V*0.0004295664 - 15.6664" units="psi"></value> <!-- D17: MAP  targetId 31 -->
-        <value offset="0" length="2" name="MAP psi" conversion="V*0.0004295664 - 15.6664" units="psi"></value> <!-- D17: MAP  targetId 31 -->``
-        <value offset="0" length="2" name="MAPADC" conversion="V*0.00007782" units="v"></value> <!-- D17: MAP  targetId 31 -->
-        <value offset="2" length="2" name="Oil Pressure" targetId="151" conversion=" V*0.00291825 - 18.75" units="V"></value> <!-- D8: ADCR03 -->
+        <value offset="0" length="2" name="MAP psi" conversion="V*0.0004295664 - 15.6664" units="psi"></value> <!-- D17: MAP  targetId 31 -->
+        <value offset="0" length="2" name="MAPADC" conversion="V*0.00007782" units="V"></value> <!-- D17: MAP  targetId 31 -->
+        <value offset="2" length="2" name="Oil Pressure" targetId="151" conversion="V*0.00291825 - 18.75" units="psi"></value> <!-- D8: ADCR03 -->
         <value offset="4" length="2" name="ADCR16" conversion="V*0.00007782" units="V"></value> <!-- F4: Avail EGR4 -->
         <value offset="6" length="2" name="ADCR08" conversion="V*0.000326" units="V"></value> <!-- Battery Voltage -->
     </frame>
