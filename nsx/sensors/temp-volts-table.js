@@ -1,87 +1,63 @@
 // This script will convert a table of ohm -> temp values to a table of voltage
 // -> temp values with the voltage intervals of your choice.
+//
+// Use a filename from ohms-table/ dir as the first argument
+//
+// $ node nsx/sensors/temp-volts-table.js rife-iat-lo-at
 
-const { round } = require('./common')
+const path = require('path')
+const yargs = require('yargs')
+const { round, interpolate } = require('../scripts/common')
 
-const ecuVoltageColumns = [0, 0.16, 0.31, 0.47, 0.62, 0.78, 0.94, 1.09, 1.25, 1.40, 1.56, 1.72, 1.87, 2.03, 2.18, 2.34, 2.50, 2.65, 2.81, 2.96, 3.12, 3.28, 3.43, 3.59, 3.74, 3.90, 4.06, 4.21, 4.37, 4.52, 4.68, 4.84, 4.99]
+const argv = yargs
+  .usage('Usage: $0 ohms-scale')
+  .demandCommand(1).argv
+const [ohmsScale] = argv._
+
+const sensorOhmsToTemp = require(path.join(__dirname, 'ohms-scales', ohmsScale+'.js'))
+
+// Voltage columns are from AEM ECUs
+const ecuVoltageColumns = [
+  0,
+  0.16,
+  0.31,
+  0.47,
+  0.62,
+  0.78,
+  0.94,
+  1.09,
+  1.25,
+  1.40,
+  1.56,
+  1.72,
+  1.87,
+  2.03,
+  2.18,
+  2.34,
+  2.50,
+  2.65,
+  2.81,
+  2.96,
+  3.12,
+  3.28,
+  3.43,
+  3.59,
+  3.74,
+  3.90,
+  4.06,
+  4.21,
+  4.37,
+  4.52,
+  4.68,
+  4.84,
+  4.99
+]
 const refVoltage = 5
 
 const internalPullupResistorValue = 100000 // 100k builtin
 const pullupResistorValue = 2200 // 100k builtin
 // const pullupResistorValue = 2275 // 2.2 * 1000 // measured
 // const pullupResistorValue = 2.2 * 1000 // 2.2 * 1000
-
-// Rife 0-300 liquid temp sensor
-const sensorOhmsToTemp = [
-  [189726, -20],
-  [132092, -10],
-  [93425, 0],
-  [67059, 10],
-  [48804, 20],
-  [35983, 30],
-  [26855, 40],
-  [20274, 50],
-  [15473, 60],
-  [11929, 70],
-  [9287, 80],
-  [7295, 90],
-  [5781, 100],
-  [4618, 110],
-  [3718, 120],
-  [3016, 130],
-  [2463, 140],
-  [2025, 150],
-  [1675, 160],
-  [1395, 170],
-  [1167, 180],
-  [983, 190],
-  [832, 200],
-  [707, 210],
-  [604, 220],
-  [519, 230],
-  [447, 240],
-  [387, 250],
-  [336, 260],
-  [294, 270],
-  [257, 280],
-  [226, 290],
-]
-
-// Rife IAT Lo-AT after 9/2020
-// const sensorOhmsToTemp = [
-//   [132092, -10],
-//   [90320, 1],
-//   [62863, 12],
-//   [44481, 23],
-//   [31963, 34],
-//   [23302, 45],
-//   [17218, 56],
-//   [12884, 67],
-//   [9756, 78],
-//   [7471, 89],
-//   [5781, 100],
-//   [4518, 111],
-//   [3564, 122],
-//   [2836, 133],
-//   [2276, 144],
-//   [1840, 155],
-//   [1500, 166],
-//   [1231, 177],
-//   [1017, 188],
-//   [845, 199],
-//   [707, 210],
-//   [595, 221],
-//   [503, 232],
-//   [428, 243],
-//   [366, 254],
-//   [314, 265],
-//   [271, 276],
-//   [235, 287],
-//   [204, 298],
-//   [178, 309],
-//   [157, 320],
-//   [132, 335],
-// ]
 
 // Measured pullup resistor: ~2275 ohms. within 2% of 2.2k rating
 //
@@ -92,234 +68,6 @@ const sensorOhmsToTemp = [
 // pullupResistorValue = (refVoltage * ohms / measuredV) - ohms
 //
 // 1.544v (125; 2238), 1.528v (126; 2272), 1.512v (127; 2306)
-
-// Measured on brand new Honda IAT sensor part number 37880-P05-A00
-// const sensorOhmsToTemp = [
-//   // From the internet scale
-//   [250000, -11],
-//   [12000, -4], // -4
-//   [6205, 32], // 0
-//   [3920, 50], // 10
-//
-//   // From measurement
-//   [4100, 50],
-//   [3570, 55],
-//   [3100, 61],
-//   [2950, 63],
-//   [2880, 64],
-//   [2480, 71],
-//   [2320, 73],
-//   [2100, 77],
-//   [1965, 80],
-//   [1937, 81],
-//   [1900, 82],
-//   [1650, 88],
-//   [1400, 95],
-//   [1250, 100],
-//   [1200, 102],
-//   [1185, 103],
-//   [1060, 107],
-//   [1050, 108],
-//   [895, 115],
-//   [810, 120],
-//   [720, 126],
-//   [660, 130],
-//   [585, 136],
-//   [520, 142],
-//   [455, 149],
-//   [405, 155],
-//   [372, 160],
-//   [328, 167],
-//   [300, 172],
-//   [284, 175],
-//   [261, 180],
-//   [235, 186],
-//   [221, 190], // 14, 4: 3.5
-//   [210, 193], // 11, 3: 3.6
-//   // [200, 197], // 10, 4: 2.5
-//   [193, 199], // 7,  2: 3.5
-//   // [180, 202], // 20, 5: 4
-//   [175, 204], // 5,  2: 2.5
-//   [162, 209], // 13, 5: 2.6
-//   [158, 212], // 4,  3: 1.3 ohms per deg 
-//
-//   // From the internet as the rest is close and I couldnt meausre over 212
-//   [121, 230],
-//   [95, 248],
-//   [60, 284],
-// ]
-
-// ohms -> temp F
-// From the internet: https://www.s2ki.com/forums/s2000-engine-management-231/infinity-coolant-temp-calibration-1133402/#post23752472
-// const sensorOhmsToTemp = [
-//   [12000, -4], // -4
-//   [6205, 32], // 0
-//   [3920, 50], // 10
-//   [2454, 68], // 20
-//   [1604, 86], // 30
-//   [1072, 104], // 40
-//   [738, 122], // 50
-//   [535, 140], // 60
-//   [387, 158], // 70
-//   [284, 176], // 80
-//   [210, 194], // 90
-//   [159, 212], // 100
-//   [121, 230], // 110
-//   [95, 248], // 120
-//   [75, 266], // 130
-//   [60, 284], // 140
-// ]
-
-// From infinity cal table: honda IAT 1990-2001
-// const sensorOhmsToTemp = [
-//   [250000, -11],
-//   [21267, -4],
-//   [9533, 10],
-//   [6600, 21],
-//   [4840, 34],
-//   [3667, 45],
-//   [2829, 55],
-//   [2200, 66],
-//   [1711, 77],
-//   [1320, 90],
-//   [1000, 104],
-//   [733, 124],
-//   [508, 149],
-//   [314, 183],
-//   [147, 230],
-//   [0, 263],
-// ]
-
-// Infinity cal: NSX ECT
-// const sensorOhmsToTemp = [
-//   [250000, -9],
-//   [21267, -4],
-//   [9533, 14],
-//   [6600, 25],
-//   [4840, 36],
-//   [3667, 46],
-//   [2829, 57],
-//   [2200, 68],
-//   [1711, 79],
-//   [1320, 90],
-//   [1000, 104],
-//   [733, 122],
-//   [508, 149],
-//   [314, 181],
-//   [147, 226],
-//   [0, 263],
-// ]
-
-// Measured ECT: 37870-PJ7-003
-// const sensorOhmsToTemp = [
-//   [250000, -9],
-//   [21267, -4],
-//   [9533, 14],
-//   [6600, 25],
-//   [4840, 36],
-//   [3667, 46],
-//   // measure starts here
-//   [2860, 60],
-//   [2430, 70],
-//   [1935, 81],
-//   [1535, 93],
-//   [1310, 100],
-//   [1055, 111],
-//   [920, 117],
-//   [770, 128],
-//   [690, 133],
-//   [540, 146],
-//   [480, 153],
-//   [417, 161],
-//   [380, 167],
-//   [315, 178],
-//   [285, 185],
-//   [254, 192],
-//   [220, 200],
-//   [200, 207],
-//   [180, 212],
-//   // end measure
-//   [147, 226],
-//   [0, 263],
-// ]
-
-
-// Scale from old guy
-// http://www.nsxprime.com/forum/showthread.php/216756-Coolant-Temperature-Questions?p=2041941&viewfull=1#post2041941
-// const sensorOhmsToTemp = [
-//   [14000, -4],
-//   [6000, 32],
-//   [2600, 68],
-//   [1000, 104],
-//   [500, 140],
-//   [260, 176],
-//   [180, 212],
-//   [100, 248],
-//   [0, 268]
-// ]
-
-// Rough; Based on the chart in the manual
-// const sensorOhmsToTemp = [
-//   [12000, -4],
-//   [5000, 32],
-//   [2000, 68],
-//   [1200, 104],
-//   [700, 140],
-//   [400, 176],
-//   [200, 212],
-//   [100, 248],
-//   [75, 266],
-//   [60, 284],
-// ]
-
-// Will find min & max columns based on `value` at table row index 0 to linear
-// interpolate values at table row index 1.
-//
-// Table must be sorted by index 0.
-// e.g.
-// value = 0.62
-// table = [
-//   [ 0.13, 284 ],
-//   [ 0.16, 266 ],
-//   [ 0.21, 248 ],
-//   [ 0.26, 230 ],
-//   [ 0.34, 212 ],
-//   [ 0.44, 194 ],
-//   [ 0.57, 176 ],
-//   [ 0.75, 158 ],
-//   [ 0.98, 140 ],
-//   [ 1.26, 122 ],
-//   [ 1.64, 104 ],
-//   [ 2.11, 86 ],
-//   [ 2.64, 68 ],
-//   [ 3.2, 50 ],
-//   [ 3.69, 32 ],
-//   [ 4.23, -4 ]
-// ]
-// Returns 171.06
-function interpolate (value, table) {
-  const tableLen = table.length
-  if (value <= table[0][0]) return table[0][1]
-  else if (value > table[tableLen - 1][0]) return table[tableLen - 1][1]
-
-  let minItem = null
-  let maxItem = null
-  for (let i = 0; i < tableLen; i++) {
-    const item = table[i]
-    const [refValue] = item
-    if (refValue >= value) {
-      maxItem = item
-      minItem = table[i - 1]
-      break
-    }
-  }
-
-  const [minValue, minResult] = minItem
-  const [maxValue, maxResult] = maxItem
-
-  const percentOfRange = (value - minValue) / (maxValue - minValue)
-  return percentOfRange * (maxResult - minResult) + minResult
-}
 
 function getIdealExternalPullup (desiredResistance, internalPullupResistorValue) {
   return 1/(1/desiredResistance - 1/internalPullupResistorValue)
@@ -340,11 +88,12 @@ const ecuTable = ecuVoltageColumns.map((volts) => (
 
 console.log(sensorTable)
 console.log(ecuTable)
-console.log(ecuTable.length)
 
 console.log(`Ideal internal resistor to reach 2200:`, getIdealExternalPullup(2200, internalPullupResistorValue))
 console.log(`Ideal internal resistor to reach 1000:`, getIdealExternalPullup(1000, internalPullupResistorValue))
 
+// # Some output
+//
 // Rife sensor
 //
 // The max temp on the ECU is only 261, so everything after .78:244deg is

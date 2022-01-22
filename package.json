@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/benogle/cartune#readme",
   "dependencies": {
-    "regression": "^2.0.1"
+    "regression": "^2.0.1",
+    "yargs": "^17.3.1"
   }
 }

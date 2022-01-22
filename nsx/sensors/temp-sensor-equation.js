@@ -1,5 +1,11 @@
+// Finds an equation that closely follows a volts -> temp scale. It will output
+// several equations with the % error at each step table
+//
+// Usage:
+// $ node nsx/sensors/temp-sensor-equation.js
+
 const regression = require('regression')
-const {round} = require('./common')
+const { round } = require('../scripts/common')
 
 // Data: [Voltage, output (temp)]
 
