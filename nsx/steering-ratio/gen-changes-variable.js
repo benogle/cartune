@@ -18,7 +18,7 @@ const currentRackPositions = [
 ]
 
 const inputAngles = [
-  15, 30, 45, 60, 90, 120, 180, 225, 270, 360, 540
+  15, 30, 45, 60, 90, 100, 120, 180, 225, 270, 360, 540
 ]
 
 const ratioCenter = 18.2
