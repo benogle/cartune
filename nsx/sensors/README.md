@@ -1,3 +1,18 @@
+# Sensors
+
+This is a scratch pad for building sensor tables and equations that end up in the ECU or in realdash.
+
+## Scripts
+
+* `temp-volts-table.js` - builds a voltage -> temp table from an ohms -> temp table
+* `temp-sensor-equation.js` - finds a suitable equation from a voltage -> temp table for use in software that doesn't accept a table
+
+## AEM EMS
+
+Sensor tables are 0-5v, 32 cells, .15625v per cell
+
+# Specific sensor notes
+
 ## Honda map sensor:
 
 * -13.9PSIg (5.48kPA, 0.32v) to 10.94PSIg (176.72kPA, 4.82v)
@@ -45,6 +60,7 @@ y = -0.000091189476*V^5 + 0.001202381256*V^4 + -0.006246447978*V^3 + 0.016175898
 100deg: 3.6v
 130deg: 2.9v
 
+```
 F     Ω
 -20   189,726
 -10   132,092
@@ -78,7 +94,4 @@ F     Ω
 270   294
 280   257
 290   226
-
-## AEM EMS
-
-Sensor tables are 0-5v, 32 cells, .15625v per cell
+```
