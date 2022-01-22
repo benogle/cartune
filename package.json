@@ -1,0 +1,22 @@
+{
+  "name": "cartune",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/benogle/cartune.git"
+  },
+  "author": "Ben Ogle",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/benogle/cartune/issues"
+  },
+  "homepage": "https://github.com/benogle/cartune#readme",
+  "dependencies": {
+    "regression": "^2.0.1"
+  }
+}
