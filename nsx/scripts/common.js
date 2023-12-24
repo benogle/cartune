@@ -50,5 +50,89 @@ module.exports = {
 
     const percentOfRange = (value - minValue) / (maxValue - minValue)
     return percentOfRange * (maxResult - minResult) + minResult
+  },
+
+  // const xScale = [1000, 2000, 3000, 4000]
+  // const yScale = [2, 4, 6, 8]
+  //
+  // `table` is an array of rows
+  // const table = [
+  //   [10, 20, 30, 40],
+  //   [50, 60, 70, 80],
+  //   [90, 100, 110, 120],
+  //   [130, 140, 150, 160],
+  // ]
+  interpolate2D (x, y, {xScale, yScale, values}) {
+    function findCell (value, scale) {
+      const scaleLen = scale.length
+      let minItem = null
+      let maxItem = null
+      for (let i = 0; i < scaleLen; i++) {
+        const refValue = scale[i]
+        if (refValue >= value) {
+          const indexMin = Math.max(i - 1, 0)
+          return {
+            indexMin,
+            scaleMin: scale[indexMin],
+            indexMax: i,
+            scaleMax: scale[i]
+          }
+        }
+      }
+
+      const index = scaleLen - 1
+      return {
+        indexMin: index,
+        scaleMin: scale[index],
+        indexMax: index,
+        scaleMax: scale[index]
+      }
+    }
+
+    function interpolate ({
+      scaleValue,
+      minScaleValue,
+      maxScaleValue,
+      minTableValue,
+      maxTableValue,
+    }) {
+      if (scaleValue <= minScaleValue) return minTableValue
+      if (scaleValue >= maxScaleValue) return maxTableValue
+      const percentOfRange = (scaleValue - minScaleValue) / (maxScaleValue - minScaleValue)
+      return percentOfRange * (maxTableValue - minTableValue) + minTableValue
+    }
+
+    const xCell = findCell(x, xScale)
+    const yCell = findCell(y, yScale)
+    const rowMin = values[yCell.indexMin]
+    const rowMax = values[yCell.indexMax]
+
+    const topLeftTableValue = values[yCell.indexMin][xCell.indexMin]
+    const topRightTableValue = values[yCell.indexMin][xCell.indexMax]
+    const bottomLeftTableValue = values[yCell.indexMax][xCell.indexMin]
+    const bottomRightTableValue = values[yCell.indexMax][xCell.indexMax]
+
+    const leftTableValue = interpolate({
+      scaleValue: y,
+      minScaleValue: yCell.scaleMin,
+      maxScaleValue: yCell.scaleMax,
+      minTableValue: topLeftTableValue,
+      maxTableValue: bottomLeftTableValue,
+    })
+    const rightTableValue = interpolate({
+      scaleValue: y,
+      minScaleValue: yCell.scaleMin,
+      maxScaleValue: yCell.scaleMax,
+      minTableValue: topRightTableValue,
+      maxTableValue: bottomRightTableValue,
+    })
+
+    return interpolate({
+      scaleValue: x,
+      minScaleValue: xCell.scaleMin,
+      maxScaleValue: xCell.scaleMax,
+      minTableValue: leftTableValue,
+      maxTableValue: rightTableValue,
+    })
   }
 }
