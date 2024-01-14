@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RealDashCAN version="2">
+
+  <frames baseId="1000">
+    <frame id="0" endianess="big">
+      <value offset="0" length="2" targetId="37" conversion="V" units="RPM"></value> <!-- RPM -->
+      <value offset="2" length="2" targetId="31" conversion="V*0.1-100" units="psi"></value> <!-- MAP -->
+      <value offset="4" length="2" targetId="42" conversion="V*0.1" units="%"></value>  <!-- TPS -->
+      <value offset="6" length="2" targetId="64" conversion="V*0.1" units="mph"></value>  <!-- Vehicle Speed -->
+    </frame>
+
+    <frame id="1" endianess="big">
+      <value offset="0" length="2" targetId="14" conversion="V*0.1-100" units="F"></value> <!-- ECT -->
+      <value offset="2" length="2" targetId="27" conversion="V*0.1-100" units="F"></value> <!-- IAT -->
+      <value offset="4" length="2" targetId="152" conversion="V*0.1-100" units="F"></value>  <!-- Oil temp -->
+      <value offset="6" length="2" name="ECU Temperature" conversion="V*0.1-100" units="F"></value>  <!-- ECU temp -->
+    </frame>
+
+    <frame id="2" endianess="big">
+      <value offset="0" length="2" targetId="151" conversion="V*0.1" units="psi"></value> <!-- Oil Pressure -->
+      <value offset="2" length="2" targetId="202" conversion="V*0.1" units="psi"></value> <!-- Fuel Pressure -->
+      <value offset="4" length="2" targetId="11" conversion="V*0.1"></value>  <!-- Baro -->
+      <value offset="6" length="2" targetId="12" conversion="V*0.01" units="V"></value>  <!-- Battery Voltage -->
+    </frame>
+
+    <frame id="3" endianess="big">
+      <value offset="0" length="2" targetId="0" conversion="V*0.01"></value> <!-- AFR / Lambda 1 -->
+      <value offset="2" length="2" targetId="1" conversion="V*0.01"></value> <!-- AFR / Lambda 2 -->
+      <value offset="4" length="2" name="AFR Target Error 1" conversion="V*0.01-10"></value>  <!-- AFR Target Error 1 -->
+      <value offset="6" length="2" name="AFR Target Error 2" conversion="V*0.01-10"></value>  <!-- AFR Target Error 2 -->
+    </frame>
+
+    <frame id="4" endianess="big">
+      <value offset="0" length="2" targetId="2" conversion="V*0.01"></value> <!-- AFR Target 1 -->
+    </frame>
+  </frames>
+
+
+  <frames>
+    <!-- X-Series inline wideband -->
+    <frame id="0x00000180" endianess="big">
+      <value offset="0" length="2" name="Digital Lambda 1" conversion="V*0.0001"></value>
+      <value offset="0" length="2" name="Digital AFR 1" conversion="14.7*V*0.0001"></value>
+      <value offset="2" length="2" name="Digital Oxygen 1" conversion="V*0.001" units="%"></value>
+      <value offset="4" length="1" name="Digital O2 1 Volts" conversion="V*0.1" units="V"></value>
+      <value offset="6" length="1" startbit="1" bitcount="1" name="Digital O2 1 Detect" units="bit"></value>
+      <value offset="6" length="1" startbit="7" bitcount="1" name="Digital O2 1 Lamda Valid" units="bit"></value>
+      <value offset="7" length="1" startbit="6" bitcount="1" name="Digital O2 1 Fault" units="bit"></value>
+    </frame>
+
+    <!-- X-Series inline wideband -->
+    <frame id="0x00000181" endianess="big">
+      <value offset="0" length="2" name="Digital Lambda 2" conversion="V*0.0001"></value>
+      <value offset="0" length="2" name="Digital AFR 2" conversion="14.7*V*0.0001"></value>
+      <value offset="2" length="2" name="Digital Oxygen 2" conversion="V*0.001" units="%"></value>
+      <value offset="4" length="1" name="Digital O2 2 Volts" conversion="V*0.1" units="V"></value>
+      <value offset="6" length="1" startbit="1" bitcount="1" name="Digital O2 2 Detect" units="bit"></value>
+      <value offset="6" length="1" startbit="7" bitcount="1" name="Digital O2 2 Lamda Valid" units="bit"></value>
+      <value offset="7" length="1" startbit="6" bitcount="1" name="Digital O2 2 Fault" units="bit"></value>
+    </frame>
+
+    <!-- 6 channel CAN module (30-2226)  -->
+    <frame id="0x0000B600" endianess="big">
+      <!-- 1 per ohm -->
+      <!-- <value offset="0" length="2" name="Expansion Analog Temp 1" conversion="V" units="ohms"></value> -->
+      <!-- Ambient air temp, pre TB -->
+      <value offset="0" length="2" targetId="173" conversion="-35.0756252065*(V*0.0001)*(V*0.0001)*(V*0.0001)*(V*0.0001)*(V*0.0001) + 230.2169709841*(V*0.0001)*(V*0.0001)*(V*0.0001)*(V*0.0001) + -574.8273511549*(V*0.0001)*(V*0.0001)*(V*0.0001) + 699.0260262714*(V*0.0001)*(V*0.0001) + -461.4915047654*(V*0.0001) + 220.0597537706" units="F"></value>
+
+      <!-- Open input -->
+      <value offset="2" length="2" name="Expansion Analog Temp 2" conversion="V" units="ohms"></value>
+
+      <!-- 0-5v inputs via expansion -->
+
+      <!-- X axis, left (neg) to right (pos) -->
+      <value offset="4" length="2" targetId="6" conversion="(V*0.001-2.48)/0.494" units="g"></value>
+
+      <!-- Y axis, front (neg) to back (pos) -->
+      <value offset="6" length="2" targetId="7" conversion="-(V*0.001-2.48)/0.494" units="g"></value>
+    </frame>
+
+    <frame id="0x0000B601" endianess="big">
+      <value offset="0" length="1" name="CAN Bus Volts 0" conversion="V*0.1" units="V"></value>
+      <value offset="1" length="1" name="CAN Bus Volts 1" conversion="V*0.1" units="V"></value>
+      <value offset="2" length="1" name="CAN Bus Volts 2" conversion="V*0.1" units="V"></value>
+      <value offset="3" length="1" name="CAN Bus Volts 3" conversion="V*0.1" units="V"></value>
+      <value offset="4" length="1" name="CAN Bus Volts 4" conversion="V*0.1" units="V"></value>
+      <value offset="5" length="1" name="CAN Bus Volts 5" conversion="V*0.1" units="V"></value>
+      <value offset="6" length="1" name="CAN Bus Volts 6" conversion="V*0.1" units="V"></value>
+      <value offset="7" length="1" name="CAN Bus Volts 7" conversion="V*0.1" units="V"></value>
+
+      <!-- The docs are wrong, they say index 7, but it's actually at index 8 -->
+      <!-- https://www.aemelectronics.com/sites/default/files/aem_product_instructions/30-2226-6-Channel-CAN-Sensor-Module-Instructions.pdf -->
+      <value offset="5" length="1" name="CAN Bus Volts" conversion="V*0.1" units="V"></value>
+    </frame>
+  </frames>
+
+</RealDashCAN>
