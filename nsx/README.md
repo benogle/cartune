@@ -1,6 +1,6 @@
 # NSX Tune
 
-Car is a 1991 NSX, C30A with an old whipple 1.6 CTSC with the high boost pulley.
+Car is a 1991 NSX, C30A with an old whipple 1.6 CTSC with a 3.5" high boost pulley (9 psi)
 
 ### Cal Files
 
@@ -15,19 +15,34 @@ Car is a 1991 NSX, C30A with an old whipple 1.6 CTSC with the high boost pulley.
 
 ### Attritbues
 
-* ECU: AEM 30-1042
-* Peak 8-9lbs boost
+* ECU: AEM 30-1006 and 30-1042
+* Peak 9 psi boost
 * RC 550cc injectors
-* 46psi avg fuel pressure
+* 46psi idle fuel pressure
 * O2 sensors
   * Both setup for 30-0310 AEM X-Series wideband analog input
   * O2 feedback OFF
+* Rife Lo-AT air temp sensor
 * Internal logging running all the time: MAP, RPM, 02 sensors, fuel, ign, knock, etc.
+
+I repinned a couple ADC channels to deal with sensor noise and add sensors
+
+* TPS into the EGRL pin: ADCR11 / PR Press
+* Oil temp into TPS pin D11: ADCR1 (TPS Raw)
+* Oil pressure into D8: ADCR3 ("MAF")
+* Fuel pressure into D6: ADCR13
+
+* Use stock TPS path for TPS
+* Oil temp uses ign adjust pathway, currently into TPS
+* Accessory
+  * D6: fuelpress
+  * D8: oil press
 
 AFRs in the
 
 * low-mid 14s when cruising
 * mid 11s in boost
+
 
 ### Known Issues
 
