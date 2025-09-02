@@ -27,12 +27,14 @@
     <frame id="0x000003eb" endianess="big">
       <value offset="0" length="2" targetId="0" conversion="14.7*V*0.01"></value> <!-- AFR / Lambda 1 -->
       <value offset="2" length="2" targetId="1" conversion="14.7*V*0.01"></value> <!-- AFR / Lambda 2 -->
-      <value offset="4" length="2" name="AFR Target Error 1" conversion="14.7*(V*0.01-10)"></value>  <!-- AFR Target Error 1 -->
-      <value offset="6" length="2" name="AFR Target Error 2" conversion="14.7*(V*0.01-10)"></value>  <!-- AFR Target Error 2 -->
+      <value offset="4" length="2" name="O2 Fuel Correction 1" units="%" conversion="V*0.01-10"></value>  <!-- AFR Fuel Correction 1 -->
+      <value offset="6" length="2" name="O2 Fuel Correction 2" units="%" conversion="V*0.01-10"></value>  <!-- AFR Fuel Correction 2 -->
     </frame>
 
     <frame id="0x000003ec" endianess="big">
       <value offset="0" length="2" targetId="2" conversion="14.7*V*0.01"></value> <!-- AFR Target 1 -->
+      <value offset="2" length="2" targetId="173" conversion="(V*0.1)*1.8+32" units="F"></value> <!-- Ambient IAT (pre SC) -->
+      <value offset="4" length="2" name="CAN Bus Volts Link" conversion="V*0.01" units="V"></value> <!-- CAN volts from AEM expansion into link -->
     </frame>
 
     <!-- X-Series inline wideband -->
@@ -62,7 +64,8 @@
       <!-- 1 per ohm -->
       <!-- <value offset="0" length="2" name="Expansion Analog Temp 1" conversion="V" units="ohms"></value> -->
       <!-- Ambient air temp, pre TB -->
-      <value offset="0" length="2" targetId="173" conversion="-35.0756252065*(V*0.0001)*(V*0.0001)*(V*0.0001)*(V*0.0001)*(V*0.0001) + 230.2169709841*(V*0.0001)*(V*0.0001)*(V*0.0001)*(V*0.0001) + -574.8273511549*(V*0.0001)*(V*0.0001)*(V*0.0001) + 699.0260262714*(V*0.0001)*(V*0.0001) + -461.4915047654*(V*0.0001) + 220.0597537706" units="F"></value>
+      <!-- <value offset="0" length="2" targetId="173" conversion="-35.0756252065*(V*0.0001)*(V*0.0001)*(V*0.0001)*(V*0.0001)*(V*0.0001) + 230.2169709841*(V*0.0001)*(V*0.0001)*(V*0.0001)*(V*0.0001) + -574.8273511549*(V*0.0001)*(V*0.0001)*(V*0.0001) + 699.0260262714*(V*0.0001)*(V*0.0001) + -461.4915047654*(V*0.0001) + 220.0597537706" units="F"></value> -->
+      <value offset="0" length="2" name="Expansion Analog Temp 1" conversion="-35.0756252065*(V*0.0001)*(V*0.0001)*(V*0.0001)*(V*0.0001)*(V*0.0001) + 230.2169709841*(V*0.0001)*(V*0.0001)*(V*0.0001)*(V*0.0001) + -574.8273511549*(V*0.0001)*(V*0.0001)*(V*0.0001) + 699.0260262714*(V*0.0001)*(V*0.0001) + -461.4915047654*(V*0.0001) + 220.0597537706" units="F"></value>
 
       <!-- Open input -->
       <value offset="2" length="2" name="Expansion Analog Temp 2" conversion="V" units="ohms"></value>
@@ -86,7 +89,7 @@
       <value offset="6" length="1" name="CAN Bus Volts 6" conversion="V*0.1" units="V"></value>
       <value offset="7" length="1" name="CAN Bus Volts 7" conversion="V*0.1" units="V"></value>
 
-      <!-- The docs are wrong, they say index 7, but it's actually at index 8 -->
+      <!-- The docs are wrong, they say index 7, but it's actually at index 5 -->
       <!-- https://www.aemelectronics.com/sites/default/files/aem_product_instructions/30-2226-6-Channel-CAN-Sensor-Module-Instructions.pdf -->
       <value offset="5" length="1" name="CAN Bus Volts" conversion="V*0.1" units="V"></value>
     </frame>
